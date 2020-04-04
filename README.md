@@ -29,8 +29,14 @@ The algorithm does seem to work, and it converges pretty quickly within 20 Itera
 
 However up to 250 Iterations may be required to flesh out final wrinkles for absolute optimal paths. So absolute perfomance is reliant upon some long term slower convergence over a significant number of iterations.
 
+Although this problem executs quite fast, faster than a Reinforcement Learning. It is an unfair comparison,as RL responds to the immediate Rewards, at each step, and only observe the final Goal reward, upon successfull path find.  Whereas here the Fitness function has presumed awareness of where the final Grid cell is to calculate a fitness penalty. So this GA fitness has a Gods Eye advantage that RL would not presume upon in its exploration searches.   
   
 ![picture alt](https://github.com/JulesVerny/GeneticGridWorldRoute/blob/master/FinalConsole.PNG "Final Iterations")
+
+And the Results with a different grid pattern:
+
+![picture alt](https://github.com/JulesVerny/GeneticGridWorldRoute/blob/master/Grid2Result.PNG "Second Grid Result")
+![picture alt](https://github.com/JulesVerny/GeneticGridWorldRoute/blob/master/Fitness.PNG "Fiyness")
 
 ### Useage ###
 The Search is started using:
@@ -42,4 +48,4 @@ The following files are required to run the UAV Simulation
 * RouteGenome.py  	: An Entity class to simply represent each Genome consisting of a Route Path and its associated Fitness score
 
 ### Main Python Package Dependencies: ###
-pygame
+pygame,numpy, matplotlib
