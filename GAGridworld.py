@@ -10,6 +10,7 @@ from random import randint
 import DisplayGrid
 import RouteGenome
 from copy import deepcopy
+import matplotlib.pyplot as plt
 # =======================================================================
 # Grid World and GA Parameters
 GRIDSIZE = 10
@@ -20,11 +21,13 @@ POPULATIONSIZE = 20
 # Create the Grid
 StartCell = (0,1)  # (3,6)
 EndCell = (9,8)	
-Holes = [(1,1),(4,2),(5,2),(4,4),(4,6),(4,7),(3,8),(4,5),(1,5),(6,7),(7,9),(2,7),(7,3),(9,3),(8,5)] 
+#Holes = [(1,1),(4,2),(5,2),(4,4),(4,6),(4,7),(3,8),(4,5),(1,5),(6,7),(7,9),(2,7),(7,3),(9,3),(8,5)] 
+#Holes = [(1,0),(1,1),(1,2),(1,3),(3,1),(6,1),(1,4),(1,5),(1,6),(1,7),(4,9),(4,8),(4,7),(4,6),(4,5),(4,4),(4,3),(4,2),(6,2),(8,3),(9,3),(6,7),(7,7)] 
+Holes = [(1,1),(1,2),(1,3),(1,5),(2,5),(4,1),(4,2),(4,3),(4,6),(5,6),(6,6),(8,8),(8,7),(8,6),(9,2),(8,2),(6,3),(6,2),(6,4),(6,5),(4,9),(4,8),(6,0)]
 
 PolicyLength = GRIDSIZE*GRIDSIZE-len(Holes)
 # ========================================================================
-
+ScoreHistory = []
 
 # ============================================================================
 def ReturnCellId(coord):
@@ -57,7 +60,7 @@ def GeneratePath(StartId):
 	(CurrentCellX, CurrentCellY) = ConvertCellIdXY(StartId)
 	PathAttempts = 0
 	Complete = False
-	while ((not Complete) and (PathAttempts < GRIDSIZE*4)):
+	while ((not Complete) and (PathAttempts < GRIDSIZE*8)):
 		RandomDirectionInt = randint(0,100)
 		(NextCellX,NextCellY) = (CurrentCellX, CurrentCellY)
 		if(RandomDirectionInt<=25):
@@ -102,7 +105,7 @@ def GenerateChildPath(ParentRoute):
 	(CurrentCellX, CurrentCellY) = SplittingNode
 	PathAttempts = 0
 	Complete = False
-	while ((not Complete) and (PathAttempts < GRIDSIZE*4)):
+	while ((not Complete) and (PathAttempts < GRIDSIZE*8)):
 		RandomDirectionInt = randint(0,100)
 		(NextCellX,NextCellY) = (CurrentCellX, CurrentCellY)
 		if(RandomDirectionInt<=25):
@@ -142,7 +145,7 @@ def CalculateFitness(ARoute):
 	# Get the Final Cell
 	(LastCellX, LastCellY) = ARoute[-1]
 	(EndCellX,EndCellY) = EndCell
-	AdditionalDistance = 5*(abs(EndCellX-LastCellX) + abs(EndCellY-LastCellY))   # 5 x Manhatten distance
+	AdditionalDistance = 10*(abs(EndCellX-LastCellX) + abs(EndCellY-LastCellY))   # 10 x Manhatten distance
 
 	Fitness = Fitness + AdditionalDistance
 	
@@ -242,6 +245,7 @@ def RunGASearch():
 	
 		TheBestPath = TheSortedPoplist[0].Path
 		print("[ ",IterationCount, " ]  Best Fitness (low is Good) : ",TheSortedPoplist[0].Fitness)
+		ScoreHistory.append((IterationCount,TheSortedPoplist[0].Fitness))
 		
 		# Now Start Slections and Creating new Population 
 		NewPopulation = []
@@ -290,8 +294,18 @@ def RunGASearch():
 	TheDisplay.SetDisplayedRoute(TheSortedPoplist[0].Path)
 	TheDisplay.UpdateDisplay()
 		
-	print(" Now Press ENTER to Exit")
-	dog = input()
+	# ==================================
+	#  Plot the Fitness vs Iterations  profile
+	x_val = [x[0] for x in ScoreHistory]
+	y_val = [x[1] for x in ScoreHistory]
+	#
+	plt.plot(x_val,y_val)
+	plt.xlabel("Iteration ")
+	plt.ylabel("Fitness")
+	plt.show()
+	
+	#print(" Now Press ENTER to Exit")
+	#dog = input()
 	
 	TheDisplay.Closedown() 	# Close Down Display
 	# =======================================================================
